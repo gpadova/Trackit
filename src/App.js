@@ -1,24 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./Componentes/Login";
+import Cadastro from "./Componentes/Cadastro";
+import Habitos from "./Componentes/Habitos";
+import Historico from "./Componentes/Historico";
+import Hoje from "./Componentes/Hoje";
+import { useState } from "react";
+import GlobalStyle from "./Componentes/GlobalStyles";
 
 function App() {
+  const [token, setToken] = useState("");
+  const [image, setImage] = useState("");
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <BrowserRouter>
+      <GlobalStyle />
+        <Routes>
+          <Route
+            path="/"
+            element={<Login setToken={setToken} setImage={setImage} />}
+          />
+          <Route path="/cadastro" element={<Cadastro />} />
+          <Route
+            path="/habitos"
+            element={<Habitos image={image} token={token} />}
+          />
+          <Route path="/hoje" element={<Hoje image={image} token={token} />} />
+          <Route
+            path="/historico"
+            element={<Historico image={image} token={token} />}
+          />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 
