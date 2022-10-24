@@ -11,8 +11,10 @@ import axios from "axios";
 export default function Habitos({ token, image }) {
   const [addHabito, setAddHabito] = useState(false);
   const [habitos, setHabitos] = useState({ id: "", name: "", days: [] });
+  const [verificaMudanca, setVerificaMudanca] = useState(false);
 
-  const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits";
+  const URL =
+    "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits";
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -26,15 +28,15 @@ export default function Habitos({ token, image }) {
       })
       .catch((res) => console.log("deu erro!"));
   }, []);
-  
-  function refreshNaPagina() {
+
+  useEffect(() => {
     axios
       .get(URL, config)
       .then((res) => {
         setHabitos(res.data);
       })
       .catch((res) => console.log("deu erro!"));
-  }
+  }, [verificaMudanca]);
 
   return (
     <>
@@ -53,11 +55,19 @@ export default function Habitos({ token, image }) {
             habitos={habitos}
             setHabitos={setHabitos}
             token={token}
-            refreshNaPagina={refreshNaPagina}
+            verificaMudanca={verificaMudanca}
+            setVerificaMudanca={setVerificaMudanca}
           />
         )}
         {habitos.length ? (
-          habitos.map((objeto) => <ListaDeHabitos objeto={objeto} token={token}/>)
+          habitos.map((objeto) => (
+            <ListaDeHabitos
+              objeto={objeto}
+              token={token}
+              verificaMudanca={verificaMudanca}
+              setVerificaMudanca={setVerificaMudanca}
+            />
+          ))
         ) : (
           <AvisoSemHabitos />
         )}
@@ -75,6 +85,7 @@ const BigBox = styled.div`
   align-items: center;
   background: #e5e5e5;
   overflow: hidden;
+  padding-top: 30px;
 `;
 
 const TopoPaginaHabitos = styled.div`

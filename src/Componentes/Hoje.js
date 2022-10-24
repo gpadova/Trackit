@@ -4,10 +4,13 @@ import Rodape from "./Rodape";
 import styled from "styled-components";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import dayjs from 'dayjs'
+import { useContext } from "react";
+import UserContext from "./UserContext";
 
 export default function Hoje({ image, token }) {
   const [habitosHoje, setHabitosHoje] = useState({});
+  const [renderVar, setRenderVar] = useState(false);
+  const { progress, setProgress } = useContext(UserContext);
 
   const URL =
     "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today";
@@ -16,6 +19,7 @@ export default function Hoje({ image, token }) {
       Authorization: `Bearer ${token}`,
     },
   };
+
   useEffect(() => {
     axios
       .get(URL, config)
@@ -24,24 +28,62 @@ export default function Hoje({ image, token }) {
       })
       .catch((res) => console.log(res.message));
   }, []);
-  console.log(habitosHoje)
 
-  // const dayjs = require("dayjs")
-  // let today = dayjs()
-  // console.log(today)
-  const today = new Date()
-  const mes = today.getMonth()
-  console.log(mes + 1)
+  useEffect(() => {
+    axios
+      .get(URL, config)
+      .then((res) => {
+        setHabitosHoje(res.data);
+      })
+      .catch((res) => console.log(res.message));
+  }, [renderVar]);
+
+  const today = new Date();
+  const mes = today.getMonth();
+  const dia = String(today.getDate());
+  let diaSemana = today.getDay();
+
+
+  function verificaDiaSemana() {
+    switch (diaSemana) {
+      case 0:
+        return "Domingo";
+      case 1:
+        return "Segunda-feira";
+      case 2:
+        return "Terça-feira";
+      case 3:
+        return "Quarta-feira";
+      case 4:
+        return "Quinta-feira";
+      case 5:
+        return "Sexta-feira";
+      default:
+        return "Sábado";
+    }
+  }
+
   return (
     <>
       <Tudo>
         <Cabecalho image={image} />
         <Topo>
-          <h2>Segunda. 17/05</h2>
+          <h2>
+            {() => verificaDiaSemana()}  {dia}/{mes + 1}
+          </h2>
           <h3>Progresso 67%</h3>
         </Topo>
         <ContainerHabitos>
-          {habitosHoje.map((habito, i) => <ListaHabitosHoje hab={habito} i={i}/>)}
+          {habitosHoje.length &&
+            habitosHoje.map((habito, i) => (
+              <ListaHabitosHoje
+                hab={habito}
+                i={i}
+                config={config}
+                renderVar={renderVar}
+                setRenderVar={setRenderVar}
+              />
+            ))}
         </ContainerHabitos>
         <Rodape />
       </Tudo>

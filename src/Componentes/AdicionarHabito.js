@@ -8,6 +8,8 @@ export default function AdicionarHabito({
   setAddHabito,
   token,
   refreshNaPagina,
+  verificaMudanca,
+  setVerificaMudanca
 }) {
   const [name, setName] = useState("");
   const [days, setDays] = useState([]);
@@ -26,6 +28,7 @@ export default function AdicionarHabito({
       .post(URL, body, config)
       .then((res) => {
         setAddHabito(!addHabito);
+        setVerificaMudanca(!verificaMudanca)
       })
       .catch((res) => console.log(res));
   }
@@ -50,7 +53,7 @@ export default function AdicionarHabito({
           <p className="cancelar" onClick={() => setAddHabito(!addHabito)}>
             cancelar
           </p>
-          <p className="salvar" onClick={(e) =>{mandarHabitoAPI(e);refreshNaPagina()}}>
+          <p className="salvar" onClick={(e) =>{mandarHabitoAPI(e)}}>
             salvar
           </p>
         </div>

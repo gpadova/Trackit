@@ -2,25 +2,31 @@ import styled from "styled-components";
 import { BiTrash } from "react-icons/bi";
 import BotoesDiaSemanaCadastrados from "./BotoesDiaSemanaCadastrados";
 import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
 
-export default function ListaDeHabitos({objeto, token}) {
-  URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/ID_DO_HABITO"
+export default function ListaDeHabitos({objeto, token, verificaMudanca, setVerificaMudanca}) {
+  
+  
+  URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${objeto.id}`
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
   function deletaHabito(e){
-    e.preventDefault()
+    // e.preventDefault()
     axios.delete(URL, config)
-    .then()
+    .then(setVerificaMudanca(!verificaMudanca))
+    .catch((res) => console.log(res.message))
   }
-  
+
+
   return (
     <HabitosCadastrados key={objeto.id}>
       <div className="topo">
         <p>{objeto.name}</p>
-        <BiTrash />
+        <BiTrash onClick={() => deletaHabito()}/>
       </div>
         <BotoesDiaSemanaCadastrados days={objeto.days}/>
   

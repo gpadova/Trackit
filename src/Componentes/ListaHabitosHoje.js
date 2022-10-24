@@ -1,14 +1,31 @@
 import styled from "styled-components";
 import { BsCheckLg } from "react-icons/bs";
-import dayjs from 'dayjs'
+import axios from "axios";
 
-export default function ListaHabitosHoje({hab, i}) {
-    const dayjs = require("dayjs")
+export default function ListaHabitosHoje({
+  hab,
+  i,
+  config,
+  setRenderVar,
+  renderVar,
+}) {
+  const URL1 = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${hab.id}/check`;
+  const URL2 = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${hab.id}/uncheck`;
+  function marcaComoFeito(e) {
+    axios
+      .post(URL1, {}, config)
+      .then(setRenderVar(!renderVar))
+      .catch(() => console.log("Deu erro!"));
+  }
 
-    dayjs().format()
-    let today = dayjs()
-    console.log(today)
-    return (
+  function marcaComoNaoFeito(e) {
+    axios
+      .post(URL2, {}, config)
+      .then(setRenderVar(!renderVar))
+      .catch(() => console.log("Deu erro!"));
+  }
+  
+  return (
     <>
       <CaixaComHabito>
         <div className="esquerda">
@@ -18,16 +35,21 @@ export default function ListaHabitosHoje({hab, i}) {
             <p>Seu recorde: {hab.highestSequence}</p>
           </div>
         </div>
-        <div className={hab.done ? "check-verde" : "check"}>
-            <BsCheckLg />
-        </div>
+        {hab.done ? (
+          <div className="check-verde">
+            <BsCheckLg onClick={() => marcaComoNaoFeito()} />
+          </div>
+        ) : (
+          <div className="check">
+            <BsCheckLg onClick={() => marcaComoFeito()} />
+          </div>
+        )}
       </CaixaComHabito>
     </>
   );
 }
 
 const CaixaComHabito = styled.div`
-
   height: 94px;
   width: 340px;
   left: 18px;
@@ -54,7 +76,6 @@ const CaixaComHabito = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-
   }
   .check {
     height: 69px;
@@ -63,18 +84,18 @@ const CaixaComHabito = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #EBEBEB;
+    background-color: #ebebeb;
     font-size: 30px;
     color: white;
   }
-  .check-verde{
+  .check-verde {
     height: 69px;
     width: 69px;
     border-radius: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #8FC549;
+    background-color: #8fc549;
     font-size: 30px;
     color: white;
   }
